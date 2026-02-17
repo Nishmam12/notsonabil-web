@@ -47,7 +47,7 @@ export default async function BenchmarksPage() {
           { label: "Benchmarks", href: "/benchmarks" },
         ]}
         title="Performance Benchmarks"
-        description="Real-time laboratory-grade telemetry and standardized hardware analysis. Our data is refreshed weekly across top current components."
+        description="Real-time laboratory-grade telemetry and standardized hardware analysis. Our data is refreshed monthly across top current components."
         actionLabel="Download Methodology PDF"
         actionHref="#"
       />
