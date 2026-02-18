@@ -152,13 +152,13 @@ export default function BenchmarksClient({
     <div className="space-y-6">
       <div className="bench-card rounded-3xl px-6 py-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+          <div className="text-sm font-semibold text-slate-700 dark:text-neutral-200">
             {description}
           </div>
-          <div className="flex w-full items-center gap-2 rounded-full border border-slate-200 bg-white/80 p-1 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-400 sm:w-auto">
+          <div className="flex w-full items-center gap-2 rounded-full border border-slate-200 bg-white/80 p-1 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-400 sm:w-auto">
             <button
               className={`flex-1 rounded-full px-4 py-1 sm:flex-none ${
-                mode === "benchmarks" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-slate-300"
+                mode === "benchmarks" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-neutral-300"
               }`}
               onClick={() => setMode("benchmarks")}
             >
@@ -166,7 +166,7 @@ export default function BenchmarksClient({
             </button>
             <button
               className={`flex-1 rounded-full px-4 py-1 sm:flex-none ${
-                mode === "shape" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-slate-300"
+                mode === "shape" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-neutral-300"
               }`}
               onClick={() => setMode("shape")}
             >
@@ -178,24 +178,24 @@ export default function BenchmarksClient({
 
       {mode === "shape" ? (
         <div className="bench-card rounded-3xl px-6 py-8">
-          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+          <div className="text-sm font-semibold text-slate-800 dark:text-neutral-100">
             Shape comparison runs on EloShapes
           </div>
-          <div className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+          <div className="mt-2 text-sm text-slate-600 dark:text-neutral-400">
             We open your selected products in a new tab for external shape analysis.
           </div>
-          <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-300">
+          <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-600 dark:text-neutral-300">
             {selectedNames.length ? (
               selectedNames.map((name) => (
                 <span
                   key={name}
-                  className="rounded-full border border-slate-200 px-3 py-1 text-slate-700 dark:border-slate-800/60 dark:text-slate-300"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-slate-700 dark:border-neutral-800/60 dark:text-neutral-300"
                 >
                   {name}
                 </span>
               ))
             ) : (
-              <span className="text-slate-500 dark:text-slate-500">No products selected.</span>
+              <span className="text-slate-500 dark:text-neutral-500">No products selected.</span>
             )}
           </div>
           <button
@@ -209,9 +209,9 @@ export default function BenchmarksClient({
       ) : (
         <>
           <div className="bench-card rounded-3xl px-6 py-5">
-            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-neutral-400">
               <select
-                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300 sm:w-auto"
+                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300 sm:w-auto"
                 value={subcategory}
                 onChange={(event) => setSubcategory(event.target.value)}
               >
@@ -223,7 +223,7 @@ export default function BenchmarksClient({
                 ))}
               </select>
               <select
-                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300 sm:w-auto"
+                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300 sm:w-auto"
                 value={connection}
                 onChange={(event) => setConnection(event.target.value)}
               >
@@ -285,7 +285,7 @@ export default function BenchmarksClient({
             onViewShape={openShape}
           />
           {loading ? (
-            <div className="text-sm text-slate-600 dark:text-slate-400">Loading data...</div>
+            <div className="text-sm text-slate-600 dark:text-neutral-400">Loading data...</div>
           ) : null}
         </>
       )}

@@ -51,10 +51,10 @@ export default function LatencyChart({
     <div className="bench-card rounded-3xl px-6 py-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</div>
-          <div className="text-xs text-slate-600 dark:text-slate-500">{subtitle}</div>
+          <div className="text-sm font-semibold text-slate-800 dark:text-neutral-200">{title}</div>
+          <div className="text-xs text-slate-600 dark:text-neutral-500">{subtitle}</div>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-slate-100 p-1 text-xs text-slate-600 dark:bg-[rgba(15,23,42,0.9)] dark:text-slate-400">
+        <div className="flex items-center gap-2 rounded-full bg-slate-100 p-1 text-xs text-slate-600 dark:bg-neutral-900/90 dark:text-neutral-400">
           <button
             className={`rounded-full px-3 py-1 ${
               mode === "wired" ? "bg-blue-500/80 text-white" : ""
@@ -87,7 +87,7 @@ export default function LatencyChart({
                 className="bench-soft-glow"
               />
             </svg>
-            <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+            <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-400">
               {axisLabels.map((label) => (
                 <span key={label}>{label}</span>
               ))}

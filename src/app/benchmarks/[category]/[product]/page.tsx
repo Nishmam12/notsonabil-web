@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import BenchLayout from "@/components/benchmarks/BenchLayout";
 import BenchHeader from "@/components/benchmarks/BenchHeader";
 import BenchmarkProductClient from "@/components/benchmarks/BenchmarkProductClient";
-import { fetchBenchmarks } from "@/lib/googleSheets";
+import { fetchBenchmarks } from "@/lib/sheets";
 
 type PageProps = {
   params: { category: string; product: string };

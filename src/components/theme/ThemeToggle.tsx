@@ -1,25 +1,37 @@
 "use client";
 
-import { useTheme } from "@/components/theme/ThemeProvider";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const { toggleTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <button
-      className="flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors duration-300 hover:border-neutral-300 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500"
-      onClick={toggleTheme}
+      className="flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors duration-300 hover:border-neutral-300 dark:border-neutral-700 dark:text-neutral-200 dark:hover:border-neutral-500"
+      onClick={() => setTheme((resolvedTheme ?? "light") === "dark" ? "light" : "dark")}
       aria-label="Toggle theme"
       type="button"
     >
+      {/* Moon icon - show in light mode */}
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4 dark:hidden"
+        className="block h-4 w-4 dark:hidden"
         fill="currentColor"
         aria-hidden="true"
       >
         <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a.75.75 0 0 0-.73.97A7 7 0 1 0 20.03 15a.75.75 0 0 0 .97-.5z" />
       </svg>
+      {/* Sun icon - show in dark mode */}
       <svg
         viewBox="0 0 24 24"
         className="hidden h-4 w-4 dark:block"

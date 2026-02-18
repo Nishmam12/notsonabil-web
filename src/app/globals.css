@@ -1,58 +1,26 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f7f6f2;
-  --foreground: #2b2b2b;
-  --grid-line: rgba(0, 0, 0, 0.06);
-  --bench-shell-bg: #f7f6f2;
-  --bench-text: #1f2937;
-  --bench-card-bg: #ffffff;
-  --bench-card-border: rgba(0, 0, 0, 0.08);
-  --bench-card-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-  --bench-glass-bg: #ffffff;
-  --bench-glass-border: rgba(0, 0, 0, 0.08);
-  --bench-divider: rgba(0, 0, 0, 0.08);
-  --bench-nav: #4b5563;
-  --bench-link: #2563eb;
-  --bench-footer-border: rgba(0, 0, 0, 0.08);
-  --bench-footer-text: #4b5563;
-  --bench-button-bg: linear-gradient(135deg, #2563eb, #3b82f6);
-  --bench-button-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
-  --bench-glow: 0 0 25px rgba(59, 130, 246, 0.4);
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --grid-line: rgba(148, 163, 184, 0.12);
-  --bench-shell-bg: radial-gradient(1200px 600px at 10% 0%, rgba(20, 52, 120, 0.35), transparent),
-    radial-gradient(900px 500px at 90% 10%, rgba(18, 89, 140, 0.25), transparent),
-    linear-gradient(180deg, #0b1220 0%, #090e1b 50%, #070c16 100%);
-  --bench-text: #e2e8f5;
-  --bench-card-bg: linear-gradient(135deg, rgba(17, 27, 48, 0.9), rgba(11, 18, 32, 0.9));
-  --bench-card-border: rgba(148, 163, 184, 0.15);
-  --bench-card-shadow: 0 16px 40px rgba(5, 10, 20, 0.6);
-  --bench-glass-bg: linear-gradient(135deg, rgba(19, 34, 58, 0.65), rgba(12, 19, 34, 0.7));
-  --bench-glass-border: rgba(148, 163, 184, 0.18);
-  --bench-divider: rgba(148, 163, 184, 0.2);
-  --bench-nav: #cbd5f5;
-  --bench-link: #8fb2ff;
-  --bench-footer-border: rgba(148, 163, 184, 0.15);
-  --bench-footer-text: #9fb2d1;
-  --bench-button-bg: linear-gradient(135deg, #2563eb, #3b82f6);
-  --bench-button-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
-  --bench-glow: 0 0 25px rgba(59, 130, 246, 0.4);
-}
-
+/* Apply global theme styles using Tailwind classes */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  @apply bg-neutral-50 text-neutral-900;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+.dark body {
+  @apply bg-neutral-950 text-neutral-100;
 }
 
 .page-grid {
-  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 120px 120px;
+}
+
+.dark .page-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
 .marquee {
@@ -70,6 +38,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -80,64 +49,13 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) rotate(-6deg);
   }
+
   50% {
     transform: translateY(-8px) rotate(-6deg);
   }
-}
-
-.bench-shell {
-  background: var(--bench-shell-bg);
-  color: var(--bench-text);
-}
-
-.bench-card {
-  background: var(--bench-card-bg);
-  border: 1px solid var(--bench-card-border);
-  box-shadow: var(--bench-card-shadow);
-}
-
-.bench-glass {
-  background: var(--bench-glass-bg);
-  border: 1px solid var(--bench-glass-border);
-  backdrop-filter: blur(16px);
-}
-
-.bench-divider {
-  border-color: var(--bench-divider);
-}
-
-.bench-accent {
-  color: #3b82f6;
-}
-
-.bench-button {
-  background: var(--bench-button-bg);
-  box-shadow: var(--bench-button-shadow);
-}
-
-.bench-soft-glow {
-  box-shadow: var(--bench-glow);
-}
-
-.bench-shell header nav {
-  color: var(--bench-nav);
-}
-
-.bench-shell header a {
-  color: var(--bench-link);
-}
-
-.bench-shell footer {
-  background: transparent;
-  border-color: var(--bench-footer-border);
-}
-
-.bench-shell footer a,
-.bench-shell footer span,
-.bench-shell footer nav {
-  color: var(--bench-footer-text);
 }

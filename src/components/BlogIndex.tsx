@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import TagPill from "@/components/TagPill";
+import ContentCard from "@/components/ContentCard";
 import type { BlogPost } from "@/lib/content";
 
 type BlogIndexProps = {
@@ -26,6 +27,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
 
   const filtered = useMemo(() => {
     return posts
+      .slice(1)
       .filter((post) =>
         search
           ? `${post.title} ${post.excerpt}`.toLowerCase().includes(search.toLowerCase())
@@ -44,7 +46,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
 
   return (
     <section className="container mx-auto w-full px-6 pb-16 sm:px-8 sm:pb-20 lg:px-10">
-      <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-[0_30px_70px_rgba(0,0,0,0.08)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)] sm:p-8">
+      <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-[0_30px_70px_rgba(0,0,0,0.08)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)] sm:p-8">
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
           <div className="aspect-[16/9] overflow-hidden rounded-2xl">
             <Image
@@ -62,10 +64,10 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
               <TagPill text={featured.productType} />
               <TagPill text={featured.year.toString()} />
             </div>
-            <h2 className="mt-4 text-2xl font-semibold text-neutral-800 dark:text-slate-100">
+            <h2 className="mt-4 text-2xl font-semibold text-neutral-800 dark:text-neutral-100">
               {featured.title}
             </h2>
-            <p className="mt-2 text-sm text-neutral-500 dark:text-slate-300">
+            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-300">
               {featured.excerpt}
             </p>
             <a
@@ -77,10 +79,10 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
           </div>
         </div>
       </div>
-      <div className="mt-8 rounded-[22px] border border-neutral-200 bg-white px-6 py-5 text-sm text-neutral-600 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:text-slate-300 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
+      <div className="mt-8 rounded-[22px] border border-neutral-200 bg-white px-6 py-5 text-sm text-neutral-600 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
         <div className="flex flex-wrap items-center gap-4">
           <input
-            className="w-full rounded-full border border-neutral-200 px-4 py-2 text-sm outline-none dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200 sm:w-64 lg:w-72"
+            className="w-full rounded-full border border-neutral-200 px-4 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 sm:w-64 lg:w-72"
             placeholder="Search articles"
             value={search}
             onChange={(event) => {
@@ -89,7 +91,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
             }}
           />
           <select
-            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
             value={selectedCategory}
             onChange={(event) => {
               setSelectedCategory(event.target.value);
@@ -104,7 +106,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
             ))}
           </select>
           <select
-            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
             value={selectedTag}
             onChange={(event) => {
               setSelectedTag(event.target.value);
@@ -119,7 +121,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
             ))}
           </select>
           <select
-            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
             value={selectedProduct}
             onChange={(event) => {
               setSelectedProduct(event.target.value);
@@ -134,7 +136,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
             ))}
           </select>
           <select
-            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+            className="rounded-full border border-neutral-200 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
             value={selectedYear}
             onChange={(event) => {
               setSelectedYear(event.target.value);
@@ -152,38 +154,25 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
       </div>
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {paginated.map((post) => (
-          <a
+          <ContentCard
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
-          >
-            <div className="aspect-[4/3] overflow-hidden rounded-xl">
-              <Image
-                className="h-full w-full object-cover"
-                src={post.image}
-                alt={post.title}
-                width={1200}
-                height={800}
-                unoptimized
-              />
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <TagPill text={post.category} />
-              <TagPill text={post.productType} />
-              <TagPill text={post.year.toString()} />
-            </div>
-            <h3 className="mt-3 text-lg font-semibold text-neutral-800 dark:text-slate-100">
-              {post.title}
-            </h3>
-            <p className="mt-2 text-sm text-neutral-500 dark:text-slate-300">
-              {post.excerpt}
-            </p>
-          </a>
+            image={post.image}
+            title={post.title}
+            description={post.excerpt}
+            tags={
+              <>
+                <TagPill text={post.category} />
+                <TagPill text={post.productType} />
+                <TagPill text={post.year.toString()} />
+              </>
+            }
+          />
         ))}
       </div>
-      <div className="mt-8 flex items-center justify-center gap-3 text-sm text-neutral-500 dark:text-slate-300">
+      <div className="mt-8 flex items-center justify-center gap-3 text-sm text-neutral-500 dark:text-neutral-300">
         <button
-          className="rounded-full border border-neutral-200 px-4 py-2 dark:border-slate-700"
+          className="rounded-full border border-neutral-200 px-4 py-2 dark:border-neutral-700"
           disabled={page === 1}
           onClick={() => setPage((prev) => Math.max(1, prev - 1))}
         >
@@ -193,7 +182,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
           Page {page} of {totalPages}
         </span>
         <button
-          className="rounded-full border border-neutral-200 px-4 py-2 dark:border-slate-700"
+          className="rounded-full border border-neutral-200 px-4 py-2 dark:border-neutral-700"
           disabled={page === totalPages}
           onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
         >

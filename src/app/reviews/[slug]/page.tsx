@@ -23,7 +23,7 @@ export default function ReviewDetailPage({ params }: PageProps) {
   return (
     <PageShell title={item.title} description={item.verdict}>
       <section className="container mx-auto w-full max-w-5xl px-6 pb-16 sm:px-8 sm:pb-20 lg:px-10">
-        <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-[0_30px_70px_rgba(0,0,0,0.08)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)] sm:p-8">
+        <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-[0_30px_70px_rgba(0,0,0,0.08)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)] sm:p-8">
           <div className="aspect-[16/9] overflow-hidden rounded-2xl">
             <Image
               className="h-full w-full object-cover"
@@ -45,19 +45,19 @@ export default function ReviewDetailPage({ params }: PageProps) {
           </div>
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-slate-100">Verdict</h3>
-              <p className="mt-2 text-sm text-neutral-500 dark:text-slate-300">{item.verdict}</p>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Verdict</h3>
+              <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-300">{item.verdict}</p>
               <div className="mt-6">
-                <h4 className="text-sm font-semibold text-neutral-700 dark:text-slate-100">Pros</h4>
-                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-slate-300">
+                <h4 className="text-sm font-semibold text-neutral-700 dark:text-neutral-100">Pros</h4>
+                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-neutral-300">
                   {item.pros.map((pro) => (
                     <li key={pro}>{pro}</li>
                   ))}
                 </ul>
               </div>
               <div className="mt-6">
-                <h4 className="text-sm font-semibold text-neutral-700 dark:text-slate-100">Cons</h4>
-                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-slate-300">
+                <h4 className="text-sm font-semibold text-neutral-700 dark:text-neutral-100">Cons</h4>
+                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-neutral-300">
                   {item.cons.map((con) => (
                     <li key={con}>{con}</li>
                   ))}
@@ -65,20 +65,20 @@ export default function ReviewDetailPage({ params }: PageProps) {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-slate-100">Specs</h3>
-              <div className="mt-3 space-y-3 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600 dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-300">
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Specs</h3>
+              <div className="mt-3 space-y-3 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600 dark:border-slate-700 dark:bg-[#0b1220] dark:text-neutral-300">
                 {item.specs.map((spec) => (
                   <div key={spec.label} className="flex items-center justify-between">
-                    <span className="font-semibold text-neutral-700 dark:text-slate-100">{spec.label}</span>
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-100">{spec.label}</span>
                     <span>{spec.value}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-6">
-                <h4 className="text-sm font-semibold text-neutral-700 dark:text-slate-100">
+                <h4 className="text-sm font-semibold text-neutral-700 dark:text-neutral-100">
                   Performance notes
                 </h4>
-                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-slate-300">
+                <ul className="mt-2 space-y-2 text-sm text-neutral-500 dark:text-neutral-300">
                   {item.performance.map((note) => (
                     <li key={note}>{note}</li>
                   ))}
@@ -108,13 +108,13 @@ export default function ReviewDetailPage({ params }: PageProps) {
         </div>
         {related.length > 0 && (
           <div className="mt-10">
-            <h3 className="text-lg font-semibold text-neutral-800 dark:text-slate-100">Related reviews</h3>
+            <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Related reviews</h3>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((entry) => (
                 <a
                   key={entry.slug}
                   href={`/reviews/${entry.slug}`}
-                  className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
+                  className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
                 >
                   <div className="aspect-[4/3] overflow-hidden rounded-xl">
                     <Image
@@ -126,10 +126,10 @@ export default function ReviewDetailPage({ params }: PageProps) {
                       unoptimized
                     />
                   </div>
-                  <div className="mt-3 text-sm font-semibold text-neutral-800 dark:text-slate-100">
+                  <div className="mt-3 text-sm font-semibold text-neutral-800 dark:text-neutral-100">
                     {entry.title}
                   </div>
-                  <div className="text-xs text-neutral-500 dark:text-slate-300">{entry.brand}</div>
+                  <div className="text-xs text-neutral-500 dark:text-neutral-300">{entry.brand}</div>
                 </a>
               ))}
             </div>

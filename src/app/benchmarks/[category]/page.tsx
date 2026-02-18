@@ -3,7 +3,7 @@ import BenchLayout from "@/components/benchmarks/BenchLayout";
 import BenchHeader from "@/components/benchmarks/BenchHeader";
 import BenchSidebar from "@/components/benchmarks/BenchSidebar";
 import BenchmarksClient from "@/components/benchmarks/BenchmarksClient";
-import { fetchBenchmarks } from "@/lib/googleSheets";
+import { fetchBenchmarks } from "@/lib/sheets";
 
 type PageProps = {
   params: { category: string };

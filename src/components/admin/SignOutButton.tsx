@@ -1,17 +1,32 @@
 "use client";
 
+import { useState } from "react";
+
 export default function SignOutButton() {
+  const [loading, setLoading] = useState(false);
+
   const handleSignOut = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    window.location.href = "/admin/login";
+    if (loading) return;
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/logout", { method: "POST" });
+      if (response.ok) {
+        window.location.href = "/admin/login";
+      }
+    } catch (error) {
+      console.error("Sign out error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <button
-      className="rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300"
+      className="rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300 disabled:opacity-50"
       onClick={handleSignOut}
+      disabled={loading}
     >
-      Sign out
+      {loading ? "Signing out..." : "Sign out"}
     </button>
   );
 }

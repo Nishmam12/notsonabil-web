@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import BenchmarksAdminPanel from "@/components/admin/BenchmarksAdminPanel";
-import { fetchBenchmarks } from "@/lib/googleSheets";
+import { fetchBenchmarks } from "@/lib/sheets";
 import type { BenchmarkDataset } from "@/types/benchmark";
 
 export default async function AdminBenchmarksPage() {
@@ -14,8 +14,8 @@ export default async function AdminBenchmarksPage() {
   }
   const sheetsConnected = Boolean(
     process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-      process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
-      process.env.GOOGLE_SHEETS_ID
+    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
+    process.env.GOOGLE_SHEETS_ID
   );
 
   return (

@@ -38,7 +38,7 @@ export default function QuickComparison({
 
   return (
     <div className="bench-card rounded-3xl px-6 py-6">
-      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-neutral-200">
         <span className="bench-accent">✦</span>
         <span>{title}</span>
       </div>
@@ -51,8 +51,8 @@ export default function QuickComparison({
               <div
                 className={`flex min-h-[10rem] flex-col items-center justify-center rounded-2xl border border-dashed px-4 py-6 text-center sm:min-h-[11rem] ${
                   selected
-                    ? "bench-glass border-slate-200 dark:border-slate-700/40"
-                    : "border-slate-200 bg-white/80 dark:border-slate-700/60 dark:bg-[rgba(10,16,30,0.65)]"
+                    ? "bench-glass border-slate-200 dark:border-neutral-700/40"
+                    : "border-slate-200 bg-white/80 dark:border-neutral-700/60 dark:bg-neutral-950/65"
                 }`}
               >
                 {selected ? (
@@ -68,10 +68,10 @@ export default function QuickComparison({
                           unoptimized
                         />
                         <div>
-                          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                          <div className="text-sm font-semibold text-slate-800 dark:text-neutral-100">
                             {selected.name}
                           </div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                          <div className="text-xs text-slate-500 dark:text-neutral-400">
                             {selected.subcategory}
                           </div>
                         </div>
@@ -85,13 +85,13 @@ export default function QuickComparison({
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-4 text-left">
                       <div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{latencyLabel}</div>
+                        <div className="text-xs text-slate-500 dark:text-neutral-400">{latencyLabel}</div>
                         <div className="text-lg font-semibold text-blue-300">
                           {selected.latency}ms
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{accuracyLabel}</div>
+                        <div className="text-xs text-slate-500 dark:text-neutral-400">{accuracyLabel}</div>
                         <div className="text-lg font-semibold text-emerald-300">
                           {selected.accuracy}%
                         </div>
@@ -103,12 +103,12 @@ export default function QuickComparison({
                     <div className="mb-3 flex size-9 items-center justify-center rounded-full bg-[rgba(59,130,246,0.1)] text-blue-300 sm:size-10">
                       +
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{slotLabels[index]}</div>
+                    <div className="text-xs text-slate-500 dark:text-neutral-400">{slotLabels[index]}</div>
                   </>
                 )}
               </div>
               <select
-                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300"
+                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300"
                 value={value}
                 onChange={(event) => updateSlot(index, event.target.value)}
               >

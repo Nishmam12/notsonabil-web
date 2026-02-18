@@ -10,9 +10,9 @@ export default function AffiliatePage() {
       description="Curated gear with transparent affiliate links and trusted picks."
     >
       <section className="container mx-auto w-full px-6 pb-16 sm:px-8 sm:pb-20 lg:px-10">
-        <div className="rounded-[28px] border border-neutral-200 bg-white px-6 py-6 shadow-[0_18px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_18px_40px_rgba(0,0,0,0.4)]">
-          <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-500 dark:text-slate-300">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400 dark:text-slate-500">
+        <div className="rounded-[28px] border border-neutral-200 bg-white px-6 py-6 shadow-[0_18px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_18px_40px_rgba(0,0,0,0.4)]">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-500 dark:text-neutral-300">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
               Filter
             </span>
             {categories.map((category) => (
@@ -24,7 +24,7 @@ export default function AffiliatePage() {
           {affiliates.map((item) => (
             <div
               key={item.slug}
-              className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
+              className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
             >
               <div className="aspect-[4/3] overflow-hidden rounded-xl">
                 <Image
@@ -40,10 +40,10 @@ export default function AffiliatePage() {
                 <TagPill text={item.category} />
                 <TagPill text={item.brand} />
               </div>
-              <h3 className="mt-3 text-lg font-semibold text-neutral-800 dark:text-slate-100">
+              <h3 className="mt-3 text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm text-neutral-500 dark:text-slate-300">
+              <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-300">
                 {item.description}
               </p>
               <a
@@ -55,8 +55,8 @@ export default function AffiliatePage() {
             </div>
           ))}
         </div>
-        <div className="mt-10 rounded-[28px] border border-dashed border-neutral-200 bg-neutral-50 px-8 py-6 text-sm text-neutral-500 dark:border-slate-800/70 dark:bg-[#0b1220] dark:text-slate-300">
-          <h3 className="text-lg font-semibold text-neutral-800 dark:text-slate-100">
+        <div className="mt-10 rounded-[28px] border border-dashed border-neutral-200 bg-neutral-50 px-8 py-6 text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
+          <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
             Affiliate disclosure
           </h3>
           <p className="mt-2">

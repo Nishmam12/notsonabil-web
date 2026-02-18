@@ -75,13 +75,13 @@ export default function DatasetGrid({
   return (
     <div className="mt-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-100">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-neutral-100">
           <span className="bench-accent">▦</span>
           <span>{title}</span>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <select
-            className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300"
+            className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300"
             value={sortBy}
             onChange={(event) => setSortBy(event.target.value)}
           >
@@ -94,7 +94,7 @@ export default function DatasetGrid({
               </option>
             ))}
           </select>
-          <button className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300">
+          <button className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300">
             {filterLabel}
           </button>
         </div>
@@ -117,7 +117,7 @@ export default function DatasetGrid({
       </div>
       <div className="mt-8 flex justify-center">
         <button
-          className="rounded-full border border-slate-200 bg-white/80 px-5 py-2 text-sm text-slate-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800/60 dark:bg-[rgba(10,16,28,0.9)] dark:text-slate-300"
+          className="rounded-full border border-slate-200 bg-white/80 px-5 py-2 text-sm text-slate-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300"
           onClick={() => setVisibleCount((count) => count + 4)}
           disabled={!hasMore}
         >

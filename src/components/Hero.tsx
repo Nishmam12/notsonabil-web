@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section className="relative container mx-auto mt-6 w-full px-6 pb-12 sm:mt-8 sm:px-8 sm:pb-16 lg:px-10">
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-[clamp(2.5rem,8vw,6rem)] font-semibold tracking-tight text-neutral-700 dark:text-slate-100">
+        <h1 className="text-[clamp(2.5rem,8vw,6rem)] font-semibold tracking-tight text-neutral-700 dark:text-neutral-100">
           not so nabil
         </h1>
         <div className="relative mt-6 w-full max-w-3xl">
@@ -26,16 +26,16 @@ export default function Hero() {
           </div>
         </div>
         <div className="mt-8 max-w-2xl sm:mt-10">
-          <p className="text-2xl font-semibold text-neutral-800 dark:text-slate-100">
+          <p className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100">
             tech reviews without the bs
           </p>
-          <p className="mt-2 text-sm text-neutral-500 dark:text-slate-300">
+          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
             Honest tech reviews that help you buy smarter, not louder.
             <br />
             Skip the hype. Watch what actually matters.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <button className="rounded-full bg-neutral-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-neutral-800">
+            <button className="rounded-full bg-neutral-900 px-5 py-2 text-sm font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200">
               Collab with me
             </button>
             <button className="text-sm font-semibold text-orange-500">

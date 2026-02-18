@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
 import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
-
-const sanitizeFilename = (name: string) =>
-  name.replace(/[^a-zA-Z0-9.\-_]/g, "_").toLowerCase();
+import { generatePresignedUploadUrl, getPublicUrl } from "@/lib/storage";
 
 const getTokenFromRequest = (request: Request) => {
   const cookies = request.headers.get("cookie") ?? "";
@@ -21,18 +17,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const formData = await request.formData();
-  const file = formData.get("file");
-  if (!file || !(file instanceof File)) {
-    return NextResponse.json({ error: "File missing" }, { status: 400 });
+  try {
+    const formData = await request.formData();
+    const file = formData.get("file");
+
+    if (!file || !(file instanceof File)) {
+      return NextResponse.json({ error: "File missing" }, { status: 400 });
+    }
+
+    // Reuse the same logic as /api/upload but specialized for admin usage if needed
+    // For now, let's establish a clean pattern using the s3 lib
+    const timestamp = Date.now();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const key = `admin/${timestamp}-${sanitizedName}`;
+
+    // Get signed URL for direct upload
+    const uploadUrl = await generatePresignedUploadUrl({
+      key,
+      contentType: file.type,
+    });
+
+    const publicUrl = getPublicUrl(key);
+
+    return NextResponse.json({
+      uploadUrl,
+      publicUrl,
+      key
+    });
+  } catch (error) {
+    console.error("Admin upload error:", error);
+    return NextResponse.json({ error: "Failed to process upload" }, { status: 500 });
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const fileName = `${Date.now()}-${sanitizeFilename(file.name)}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await fs.mkdir(uploadDir, { recursive: true });
-  const filePath = path.join(uploadDir, fileName);
-  await fs.writeFile(filePath, buffer);
-
-  return NextResponse.json({ url: `/uploads/${fileName}` });
 }

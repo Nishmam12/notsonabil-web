@@ -1,3 +1,4 @@
+import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
 
 const gallery = [
@@ -10,18 +11,14 @@ const gallery = [
 
 export default function GallerySection() {
   return (
-    <section id="gallery" className="container mx-auto w-full px-6 pb-16 sm:px-8 sm:pb-20 lg:px-10">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold text-neutral-800 dark:text-slate-100">
-          tech through my lens
-        </h2>
-      </div>
+    <section id="gallery" className="container mx-auto w-full px-6 sm:px-8 lg:px-10">
+      <SectionHeader variant="section" title="tech through my lens" />
       <div className="relative mt-8">
         <div className="flex gap-6 overflow-x-auto pb-4">
           {gallery.map((src, index) => (
             <div
               key={`${src}-${index}`}
-              className="min-w-[70%] flex-1 rounded-2xl border border-neutral-200 bg-white p-2 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-slate-800/70 dark:bg-[#0f172a] dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:min-w-[45%] lg:min-w-[30%]"
+              className="min-w-[70%] flex-1 rounded-2xl border border-neutral-200 bg-white p-2 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)] sm:min-w-[45%] lg:min-w-[30%]"
             >
               <div className="aspect-[4/3] overflow-hidden rounded-xl">
                 <Image

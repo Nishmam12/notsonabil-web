@@ -17,16 +17,16 @@ export default function PollingChart({
     <div className="bench-card rounded-3xl px-6 py-6">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</div>
-          <div className="text-xs text-slate-600 dark:text-slate-500">{subtitle}</div>
+          <div className="text-sm font-semibold text-slate-800 dark:text-neutral-200">{title}</div>
+          <div className="text-xs text-slate-600 dark:text-neutral-500">{subtitle}</div>
         </div>
-        <button className="text-xs text-slate-500 dark:text-slate-400">i</button>
+        <button className="text-xs text-slate-500 dark:text-neutral-400">i</button>
       </div>
       <div className="mt-6 space-y-4">
         {entries.length ? (
           entries.map((entry) => (
             <div key={entry.label} className="space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
                 <span>{entry.label}</span>
                 <span>{entry.value}%</span>
               </div>

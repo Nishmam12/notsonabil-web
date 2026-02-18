@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { BenchmarkDataset } from "@/types/benchmark";
-import { deleteBenchmark, updateBenchmark } from "@/lib/googleSheets";
+import { db } from "@/lib/db";
 import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
 
 const getTokenFromRequest = (request: Request) => {
@@ -22,32 +22,52 @@ export async function PUT(request: Request) {
     sheetId?: string;
     sheetTab?: string;
   };
-  if (!body?.id) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+
+  // Import validation
+  const { validateBenchmark } = await import("@/lib/validation");
+  const validation = validateBenchmark(body);
+
+  if (!validation.valid) {
+    return NextResponse.json(
+      {
+        error: "Validation failed",
+        details: validation.errors.reduce(
+          (acc, err) => ({ ...acc, [err.field]: err.message }),
+          {}
+        ),
+      },
+      { status: 400 }
+    );
   }
 
   try {
-    await updateBenchmark(body, {
+    await db.benchmarks.update(body, {
       spreadsheetId: body.sheetId,
       sheetTab: body.sheetTab,
     });
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: "Failed to update benchmark" }, { status: 500 });
+  } catch (error) {
+    console.error("Failed to update benchmark:", error);
+    const message = error instanceof Error ? error.message : "Failed to update benchmark";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, context: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   const token = getTokenFromRequest(request);
   if (!token || !verifyAdminToken(token)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
+    const { id } = await context.params;
     const url = new URL(request.url);
     const sheetId = url.searchParams.get("sheetId") ?? undefined;
     const sheetTab = url.searchParams.get("sheetTab") ?? undefined;
-    await deleteBenchmark(context.params.id, {
+    await db.benchmarks.delete(id, {
       spreadsheetId: sheetId,
       sheetTab,
     });

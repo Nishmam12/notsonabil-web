@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import type { BenchmarkDataset } from "@/types/benchmark";
+import type { Brand } from "@/types/brand";
 import { computeRankingScore } from "@/lib/benchmarkRanking";
 import { getFallbackBenchmarks } from "@/lib/benchmarkFallback";
 
@@ -68,6 +69,15 @@ const getSheetConfig = (override?: SheetOverride) => {
   return { spreadsheetId, range, sheetTab };
 };
 
+const getBrandSheetConfig = (override?: SheetOverride) => {
+  const spreadsheetId = override?.spreadsheetId ?? getEnv("GOOGLE_SHEETS_ID");
+  const overrideTab = override?.sheetTab?.trim();
+  const sheetTab =
+    overrideTab || process.env.GOOGLE_BRANDS_SHEET_TAB || "Brands";
+  const range = `${sheetTab}!A1:D`;
+  return { spreadsheetId, range, sheetTab };
+};
+
 const fetchSheetIdByTitle = async (
   token: string,
   spreadsheetId: string,
@@ -122,6 +132,28 @@ const mapRowToBenchmark = (row: string[]): BenchmarkDataset | null => {
   };
 };
 
+const mapRowToBrand = (row: string[], index: number): Brand | null => {
+  if (!row.length) {
+    return null;
+  }
+  const id = row[0]?.trim();
+  const logoUrl = row[1]?.trim();
+  if (!id || !logoUrl) {
+    return null;
+  }
+  const createdAt = row[2]?.trim() || new Date().toISOString();
+  const rawOrder = row[3]?.trim();
+  const parsedOrder = Number(rawOrder);
+  const displayOrder =
+    Number.isFinite(parsedOrder) && parsedOrder > 0 ? parsedOrder : index + 1;
+  return {
+    id,
+    logoUrl,
+    createdAt,
+    displayOrder,
+  };
+};
+
 export const fetchBenchmarks = async () => {
   if (
     !process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
@@ -155,6 +187,45 @@ export const fetchBenchmarks = async () => {
     return mapped.length ? mapped : getFallbackBenchmarks();
   } catch {
     return getFallbackBenchmarks();
+  }
+};
+
+export const fetchBrands = async () => {
+  if (
+    !process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
+    !process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY ||
+    !process.env.GOOGLE_SHEETS_ID
+  ) {
+    return [] as Brand[];
+  }
+  const token = await getAccessToken();
+  const { spreadsheetId, range } = getBrandSheetConfig();
+  const url = new URL(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`
+  );
+  try {
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      next: { revalidate: 300 },
+    });
+    if (!response.ok) {
+      return [] as Brand[];
+    }
+    const data = (await response.json()) as { values?: string[][] };
+    const rows = data.values ?? [];
+    const [, ...values] = rows;
+    const mapped = values
+      .map((row, index) => mapRowToBrand(row, index))
+      .filter((item): item is Brand => Boolean(item));
+    const sorted = [...mapped].sort((a, b) => {
+      if (a.displayOrder === b.displayOrder) {
+        return a.createdAt.localeCompare(b.createdAt);
+      }
+      return a.displayOrder - b.displayOrder;
+    });
+    return sorted;
+  } catch {
+    return [] as Brand[];
   }
 };
 
@@ -200,6 +271,34 @@ export const appendBenchmark = async (
   );
   if (!response.ok) {
     throw new Error("Failed to append benchmark");
+  }
+};
+
+export const appendBrand = async (brand: Brand, override?: SheetOverride) => {
+  const token = await getAccessToken();
+  const { spreadsheetId, range } = getBrandSheetConfig(override);
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        values: [
+          [
+            brand.id,
+            brand.logoUrl,
+            brand.createdAt,
+            brand.displayOrder,
+          ],
+        ],
+      }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to append brand");
   }
 };
 
@@ -260,6 +359,95 @@ export const updateBenchmark = async (
   );
   if (!updateResponse.ok) {
     throw new Error("Failed to update benchmark");
+  }
+};
+
+export const deleteBrand = async (id: string, override?: SheetOverride) => {
+  const token = await getAccessToken();
+  const { spreadsheetId, sheetTab } = getBrandSheetConfig(override);
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTab}!A1:D`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    }
+  );
+  const data = (await response.json()) as { values?: string[][] };
+  const rows = data.values ?? [];
+  const [, ...values] = rows;
+  const rowIndex = values.findIndex((row) => row[0] === id);
+  if (rowIndex === -1) {
+    throw new Error("Brand not found");
+  }
+  const sheetId = await fetchSheetIdByTitle(token, spreadsheetId, sheetTab);
+  const deleteResponse = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requests: [
+          {
+            deleteDimension: {
+              range: {
+                sheetId,
+                dimension: "ROWS",
+                startIndex: rowIndex + 1,
+                endIndex: rowIndex + 2,
+              },
+            },
+          },
+        ],
+      }),
+    }
+  );
+  if (!deleteResponse.ok) {
+    throw new Error("Failed to delete brand");
+  }
+};
+
+export const reorderBrands = async (
+  updates: { id: string; displayOrder: number }[],
+  override?: SheetOverride
+) => {
+  if (!updates.length) {
+    return;
+  }
+  const token = await getAccessToken();
+  const { spreadsheetId, sheetTab } = getBrandSheetConfig(override);
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTab}!A1:D`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    }
+  );
+  const data = (await response.json()) as { values?: string[][] };
+  const rows = data.values ?? [];
+  const [, ...values] = rows;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  for (const update of updates) {
+    const rowIndex = values.findIndex((row) => row[0] === update.id);
+    if (rowIndex === -1) {
+      continue;
+    }
+    const targetRange = `${sheetTab}!D${rowIndex + 2}:D${rowIndex + 2}`;
+    await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${targetRange}?valueInputOption=USER_ENTERED`,
+      {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          values: [[String(update.displayOrder)]],
+        }),
+      }
+    );
   }
 };
 

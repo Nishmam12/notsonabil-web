@@ -35,7 +35,7 @@ export default function BenchSidebar({
 }: BenchSidebarProps) {
   return (
     <aside className="bench-card rounded-3xl px-5 py-5 sm:py-6">
-      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-400">
         {title}
       </div>
       <div className="mt-4 space-y-2">
@@ -48,20 +48,20 @@ export default function BenchSidebar({
               href={`/benchmarks/${category.id}`}
               className={`flex items-center gap-3 rounded-2xl px-3 py-3 transition ${
                 isActive
-                  ? "bg-[rgba(59,130,246,0.15)] text-slate-900 dark:text-slate-100"
-                  : "text-slate-600 hover:bg-[rgba(148,163,184,0.08)] hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                  ? "bg-[rgba(59,130,246,0.15)] text-slate-900 dark:text-neutral-100"
+                  : "text-slate-600 hover:bg-[rgba(148,163,184,0.08)] hover:text-slate-900 dark:text-neutral-400 dark:hover:text-neutral-200"
               }`}
             >
               <div
                 className={`flex size-8 items-center justify-center rounded-xl sm:size-9 ${
                   isActive
-                    ? "bg-blue-100 dark:bg-[rgba(59,130,246,0.18)]"
-                    : "bg-slate-200/70 dark:bg-[rgba(15,23,42,0.7)]"
+                    ? "bg-blue-100 dark:bg-blue-500/20"
+                    : "bg-slate-200/70 dark:bg-neutral-900/70"
                 }`}
               >
                 <svg
                   viewBox="0 0 24 24"
-                  className={`h-4 w-4 ${isActive ? "text-blue-500 dark:text-blue-300" : "text-slate-500 dark:text-slate-400"}`}
+                  className={`h-4 w-4 ${isActive ? "text-blue-500 dark:text-blue-300" : "text-slate-500 dark:text-neutral-400"}`}
                   fill="currentColor"
                 >
                   <path d={icon} />
@@ -69,7 +69,7 @@ export default function BenchSidebar({
               </div>
               <div>
                 <div className="text-sm font-semibold">{category.label}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">{category.description}</div>
+                <div className="text-xs text-slate-500 dark:text-neutral-400">{category.description}</div>
               </div>
             </Link>
           );

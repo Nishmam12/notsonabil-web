@@ -10,9 +10,9 @@ import WorkSection from "@/components/WorkSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#f7f6f2] text-neutral-800 dark:bg-[#0b0f1a] dark:text-slate-100">
+    <div className="min-h-screen text-neutral-900 dark:text-neutral-100">
       <Header />
-      <main className="page-grid">
+      <main className="page-grid flex flex-col gap-16 pb-16 pt-8 sm:gap-20 sm:pb-20 lg:gap-24">
         <Hero />
         <Marquee />
         <ReviewHighlight />

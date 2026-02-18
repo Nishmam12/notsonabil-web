@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appendBenchmark, fetchBenchmarks } from "@/lib/googleSheets";
+import { db } from "@/lib/db";
 import type { BenchmarkDataset } from "@/types/benchmark";
 import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
 
@@ -44,7 +44,7 @@ const sortBenchmarks = (data: BenchmarkDataset[], sort: string | null) => {
 
 export async function GET(request: Request) {
   try {
-    const data = await fetchBenchmarks();
+    const data = await db.benchmarks.getAll();
     const url = new URL(request.url);
     const filtered = filterBenchmarks(data, url.searchParams);
     const sorted = sortBenchmarks(filtered, url.searchParams.get("sort"));
@@ -79,17 +79,32 @@ export async function POST(request: Request) {
     sheetId?: string;
     sheetTab?: string;
   };
-  if (!body?.id || !body?.name) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+
+  // Import validation at the top
+  const { validateBenchmark } = await import("@/lib/validation");
+  const validation = validateBenchmark(body);
+
+  if (!validation.valid) {
+    return NextResponse.json(
+      {
+        error: "Validation failed",
+        details: validation.errors.reduce(
+          (acc, err) => ({ ...acc, [err.field]: err.message }),
+          {}
+        ),
+      },
+      { status: 400 }
+    );
   }
 
   try {
-    await appendBenchmark(body, {
+    await db.benchmarks.create(body, {
       spreadsheetId: body.sheetId,
       sheetTab: body.sheetTab,
     });
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error("Failed to save benchmark:", error);
     return NextResponse.json({ error: "Failed to save benchmark" }, { status: 500 });
   }
 }
