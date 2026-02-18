@@ -1,21 +1,18 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { db } from "@/lib/db";
+import {
+  getBrands,
+  createBrand,
+  deleteBrandById,
+  reorderBrandDisplay,
+} from "@/lib/db";
 import type { Brand } from "@/types/brand";
-import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
-
-const getTokenFromRequest = (request: Request) => {
-  const cookies = request.headers.get("cookie") ?? "";
-  return cookies
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .find((cookie) => cookie.startsWith(`${sessionCookieName}=`))
-    ?.split("=")[1];
-};
+import { requireAdmin } from "@/lib/permissions";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   try {
-    const brands = await db.brands.getAll();
+    const brands = await getBrands();
     const sorted = [...brands].sort((a, b) => {
       if (a.displayOrder === b.displayOrder) {
         return a.createdAt.localeCompare(b.createdAt);
@@ -28,17 +25,15 @@ export async function GET() {
       "s-maxage=300, stale-while-revalidate=600"
     );
     return response;
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch brands" },
-      { status: 500 }
-    );
+  } catch (error) {
+    logger.error("Failed to fetch brands", error);
+    return NextResponse.json({ error: "Failed to fetch brands" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
-  const token = getTokenFromRequest(request);
-  if (!token || !verifyAdminToken(token)) {
+  const isAdmin = requireAdmin(request);
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -51,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const existing = await db.brands.getAll();
+    const existing = await getBrands();
     const maxOrder = existing.reduce(
       (max, item) => (item.displayOrder > max ? item.displayOrder : max),
       0
@@ -66,19 +61,17 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
       displayOrder,
     };
-    await db.brands.create(brand);
+    await createBrand(brand);
     return NextResponse.json({ data: brand });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to create brand" },
-      { status: 500 }
-    );
+  } catch (error) {
+    logger.error("Failed to create brand", error);
+    return NextResponse.json({ error: "Failed to create brand" }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request) {
-  const token = getTokenFromRequest(request);
-  if (!token || !verifyAdminToken(token)) {
+  const isAdmin = requireAdmin(request);
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -89,19 +82,17 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    await db.brands.delete(id);
+    await deleteBrandById(id);
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to delete brand" },
-      { status: 500 }
-    );
+  } catch (error) {
+    logger.error("Failed to delete brand", error);
+    return NextResponse.json({ error: "Failed to delete brand" }, { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
-  const token = getTokenFromRequest(request);
-  if (!token || !verifyAdminToken(token)) {
+  const isAdmin = requireAdmin(request);
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -126,13 +117,11 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    await db.brands.reorder(sanitized);
+    await reorderBrandDisplay(sanitized);
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to reorder brands" },
-      { status: 500 }
-    );
+  } catch (error) {
+    logger.error("Failed to reorder brands", error);
+    return NextResponse.json({ error: "Failed to reorder brands" }, { status: 500 });
   }
 }
 

@@ -2,7 +2,7 @@ import BenchLayout from "@/components/benchmarks/BenchLayout";
 import BenchHeader from "@/components/benchmarks/BenchHeader";
 import BenchSidebar from "@/components/benchmarks/BenchSidebar";
 import BenchmarksClient from "@/components/benchmarks/BenchmarksClient";
-import { fetchBenchmarks } from "@/lib/sheets";
+import { getBenchmarks } from "@/lib/db";
 
 const formatLabel = (value: string) =>
   value
@@ -11,7 +11,7 @@ const formatLabel = (value: string) =>
     .join(" ");
 
 export default async function BenchmarksPage() {
-  const data = await fetchBenchmarks();
+  const data = await getBenchmarks();
   const categories = Array.from(new Set(data.map((item) => item.category))).map((id) => ({
     id,
     label: formatLabel(id),

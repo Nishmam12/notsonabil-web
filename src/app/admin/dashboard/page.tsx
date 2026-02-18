@@ -1,6 +1,6 @@
 import Link from "next/link";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { fetchBenchmarks } from "@/lib/sheets";
+import { getBenchmarks } from "@/lib/db";
 
 const formatLabel = (value: string) =>
   value
@@ -9,7 +9,7 @@ const formatLabel = (value: string) =>
     .join(" ");
 
 export default async function AdminDashboardPage() {
-  const benchmarks = await fetchBenchmarks();
+  const benchmarks = await getBenchmarks();
   const totalBenchmarks = benchmarks.length;
   const categories = Array.from(new Set(benchmarks.map((item) => item.category)));
   const recentBenchmarks = [...benchmarks]

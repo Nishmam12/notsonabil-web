@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generatePresignedUploadUrl, getPublicUrl } from "@/lib/storage";
+import { logger } from "@/lib/logger";
 
 const ALLOWED_TYPES = {
     // Images
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
             key,
         });
     } catch (error) {
-        console.error("Error generating presigned URL:", error);
+        logger.error("Error generating presigned URL", error);
         return NextResponse.json(
             { error: "Failed to generate upload URL" },
             { status: 500 }

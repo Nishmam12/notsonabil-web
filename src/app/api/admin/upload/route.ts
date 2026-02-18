@@ -1,19 +1,11 @@
 import { NextResponse } from "next/server";
-import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
+import { requireAdmin } from "@/lib/permissions";
 import { generatePresignedUploadUrl, getPublicUrl } from "@/lib/storage";
-
-const getTokenFromRequest = (request: Request) => {
-  const cookies = request.headers.get("cookie") ?? "";
-  return cookies
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .find((cookie) => cookie.startsWith(`${sessionCookieName}=`))
-    ?.split("=")[1];
-};
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
-  const token = getTokenFromRequest(request);
-  if (!token || !verifyAdminToken(token)) {
+  const isAdmin = requireAdmin(request);
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,7 +37,7 @@ export async function POST(request: Request) {
       key
     });
   } catch (error) {
-    console.error("Admin upload error:", error);
+    logger.error("Admin upload error", error);
     return NextResponse.json({ error: "Failed to process upload" }, { status: 500 });
   }
 }

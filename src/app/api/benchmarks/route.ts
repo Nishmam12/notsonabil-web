@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import {
+  getBenchmarks,
+  createBenchmark,
+} from "@/lib/db";
 import type { BenchmarkDataset } from "@/types/benchmark";
-import { verifyAdminToken, sessionCookieName } from "@/lib/auth";
+import { requireAdmin } from "@/lib/permissions";
+import { logger } from "@/lib/logger";
 
 const filterBenchmarks = (data: BenchmarkDataset[], params: URLSearchParams) => {
   const category = params.get("category")?.toLowerCase();
@@ -44,7 +48,7 @@ const sortBenchmarks = (data: BenchmarkDataset[], sort: string | null) => {
 
 export async function GET(request: Request) {
   try {
-    const data = await db.benchmarks.getAll();
+    const data = await getBenchmarks();
     const url = new URL(request.url);
     const filtered = filterBenchmarks(data, url.searchParams);
     const sorted = sortBenchmarks(filtered, url.searchParams.get("sort"));
@@ -56,22 +60,14 @@ export async function GET(request: Request) {
     response.headers.set("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
     return response;
   } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch benchmarks" },
-      { status: 500 }
-    );
+    logger.error("Failed to fetch benchmarks");
+    return NextResponse.json({ error: "Failed to fetch benchmarks" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
-  const cookies = request.headers.get("cookie") ?? "";
-  const token = cookies
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .find((cookie) => cookie.startsWith(`${sessionCookieName}=`))
-    ?.split("=")[1];
-
-  if (!token || !verifyAdminToken(token)) {
+  const isAdmin = requireAdmin(request);
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -98,13 +94,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    await db.benchmarks.create(body, {
-      spreadsheetId: body.sheetId,
+    await createBenchmark(body, {
+      sheetId: body.sheetId,
       sheetTab: body.sheetTab,
     });
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Failed to save benchmark:", error);
+    logger.error("Failed to save benchmark", error);
     return NextResponse.json({ error: "Failed to save benchmark" }, { status: 500 });
   }
 }

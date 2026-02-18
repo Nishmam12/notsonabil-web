@@ -1,13 +1,13 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import BenchmarksAdminPanel from "@/components/admin/BenchmarksAdminPanel";
-import { fetchBenchmarks } from "@/lib/sheets";
+import { getBenchmarks } from "@/lib/db";
 import type { BenchmarkDataset } from "@/types/benchmark";
 
 export default async function AdminBenchmarksPage() {
   let initialBenchmarks: BenchmarkDataset[] = [];
   let initialError = "";
   try {
-    initialBenchmarks = await fetchBenchmarks();
+    initialBenchmarks = await getBenchmarks();
   } catch {
     initialError =
       "Benchmarks data is unavailable. Check Google Sheets environment variables.";

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import BenchLayout from "@/components/benchmarks/BenchLayout";
 import BenchHeader from "@/components/benchmarks/BenchHeader";
 import BenchmarkProductClient from "@/components/benchmarks/BenchmarkProductClient";
-import { fetchBenchmarks } from "@/lib/sheets";
+import { getBenchmarks } from "@/lib/db";
 
 type PageProps = {
   params: { category: string; product: string };
@@ -15,7 +15,7 @@ const formatLabel = (value: string) =>
     .join(" ");
 
 export default async function BenchmarkProductPage({ params }: PageProps) {
-  const data = await fetchBenchmarks();
+  const data = await getBenchmarks();
   const categories = Array.from(new Set(data.map((item) => item.category))).map((id) => ({
     id,
     label: formatLabel(id),
