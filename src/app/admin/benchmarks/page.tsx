@@ -9,14 +9,8 @@ export default async function AdminBenchmarksPage() {
   try {
     initialBenchmarks = await getBenchmarks();
   } catch {
-    initialError =
-      "Benchmarks data is unavailable. Check Google Sheets environment variables.";
+    initialError = "Benchmarks data is unavailable.";
   }
-  const sheetsConnected = Boolean(
-    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
-    process.env.GOOGLE_SHEETS_ID
-  );
 
   return (
     <AdminLayout
@@ -26,7 +20,7 @@ export default async function AdminBenchmarksPage() {
       <BenchmarksAdminPanel
         initialBenchmarks={initialBenchmarks}
         initialError={initialError}
-        sheetsConnected={sheetsConnected}
+        sheetsConnected={false}
       />
     </AdminLayout>
   );

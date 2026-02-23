@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { BenchmarkCategory } from "@/types/benchmark";
 
 type CategoryItem = {
@@ -11,6 +10,7 @@ type BenchSidebarProps = {
   title: string;
   categories: CategoryItem[];
   activeCategory: BenchmarkCategory;
+  onSelectCategory: (id: BenchmarkCategory) => void;
 };
 
 const iconMap: Record<BenchmarkCategory, string> = {
@@ -32,46 +32,50 @@ export default function BenchSidebar({
   title,
   categories,
   activeCategory,
+  onSelectCategory,
 }: BenchSidebarProps) {
   return (
-    <aside className="bench-card rounded-3xl px-5 py-5 sm:py-6">
-      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-400">
+    <aside className="bench-card lg:sticky lg:top-24 flex h-fit flex-col p-5">
+      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
         {title}
       </div>
-      <div className="mt-4 space-y-2">
+      <div className="mt-6 space-y-1.5">
         {categories.map((category) => {
           const isActive = category.id === activeCategory;
           const icon = iconMap[category.id as keyof typeof iconMap] ?? iconMap.mice;
           return (
-            <Link
+            <button
               key={category.id}
-              href={`/benchmarks/${category.id}`}
-              className={`flex items-center gap-3 rounded-2xl px-3 py-3 transition ${
-                isActive
-                  ? "bg-[rgba(59,130,246,0.15)] text-slate-900 dark:text-neutral-100"
-                  : "text-slate-600 hover:bg-[rgba(148,163,184,0.08)] hover:text-slate-900 dark:text-neutral-400 dark:hover:text-neutral-200"
-              }`}
+              onClick={() => onSelectCategory(category.id as any)}
+              className={`group flex w-full items-center gap-3 rounded-2xl p-2.5 transition-all duration-200 ${isActive
+                ? "bg-accent/10 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.1)]"
+                : "hover:bg-muted"
+                }`}
             >
               <div
-                className={`flex size-8 items-center justify-center rounded-xl sm:size-9 ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-500/20"
-                    : "bg-slate-200/70 dark:bg-neutral-900/70"
-                }`}
+                className={`flex size-9 items-center justify-center rounded-xl transition-colors duration-200 ${isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-muted text-muted-foreground group-hover:bg-accent/10 group-hover:text-accent"
+                  }`}
               >
                 <svg
                   viewBox="0 0 24 24"
-                  className={`h-4 w-4 ${isActive ? "text-blue-500 dark:text-blue-300" : "text-slate-500 dark:text-neutral-400"}`}
+                  className="h-4.5 w-4.5"
                   fill="currentColor"
                 >
                   <path d={icon} />
                 </svg>
               </div>
-              <div>
-                <div className="text-sm font-semibold">{category.label}</div>
-                <div className="text-xs text-slate-500 dark:text-neutral-400">{category.description}</div>
+              <div className="min-w-0 text-left">
+                <div className={`text-sm font-bold truncate transition-colors ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                  }`}>
+                  {category.label}
+                </div>
+                <div className="truncate text-[10px] font-medium text-muted-foreground/60">
+                  {category.description}
+                </div>
               </div>
-            </Link>
+            </button>
           );
         })}
       </div>

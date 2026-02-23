@@ -12,6 +12,80 @@ body {
   @apply bg-neutral-950 text-neutral-100;
 }
 
+@theme {
+  --color-border: var(--border);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --shadow-bench: 0 8px 30px var(--shadow-color);
+  --shadow-bench-hover: 0 20px 40px var(--shadow-color-hover);
+}
+
+:root {
+  --background: #fdfdfd;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --border: #e4e4e7;
+  --shadow-color: rgb(0 0 0 / 0.04);
+  --shadow-color-hover: rgb(0 0 0 / 0.08);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #f4f4f5;
+  --card: #121212;
+  --card-foreground: #f4f4f5;
+  --muted: #1e1e1e;
+  --muted-foreground: #a1a1aa;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --border: #27272a;
+  --shadow-color: rgb(0 0 0 / 0.2);
+  --shadow-color-hover: rgb(0 0 0 / 0.4);
+}
+
+@layer utilities {
+  .bench-shell {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  .bench-card {
+    @apply rounded-3xl border border-border bg-card shadow-bench transition-all duration-300;
+  }
+
+  .bench-card-hover {
+    @apply hover:border-accent/40 hover:shadow-bench-hover;
+  }
+
+  .bench-button {
+    @apply bg-accent text-accent-foreground transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .bench-glass {
+    @apply bg-white/70 backdrop-blur-md dark:bg-neutral-900/70;
+  }
+
+  .bench-accent {
+    @apply text-accent;
+  }
+
+  .bench-soft-glow {
+    filter: drop-shadow(0 0 8px var(--accent));
+  }
+}
+
+
 .page-grid {
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);

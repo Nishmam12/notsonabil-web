@@ -13,28 +13,8 @@ type BenchmarksClientProps = {
   description: string;
 };
 
-const buildAxisLabels = (items: BenchmarkDataset[]) => {
-  return items
-    .slice(0, 3)
-    .map((item) =>
-      new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit" })
-    );
-};
 
-const buildLatencySeries = (items: BenchmarkDataset[]) => {
-  const sorted = [...items].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
-  return sorted.slice(-7).map((item) => item.latency);
-};
 
-const buildPollingEntries = (items: BenchmarkDataset[]): PollingEntry[] => {
-  const ranked = [...items]
-    .filter((item) => item.accuracy > 0)
-    .sort((a, b) => b.accuracy - a.accuracy)
-    .slice(0, 4);
-  return ranked.map((item) => ({ label: item.name, value: item.accuracy }));
-};
 
 const buildEloShapesUrl = (names: string[]) => {
   if (names.length >= 2) {
@@ -61,9 +41,8 @@ export default function BenchmarksClient({
   const [datasets, setDatasets] = useState<BenchmarkDataset[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"benchmarks" | "shape">("benchmarks");
-  const [selectedIds, setSelectedIds] = useState<(string | "")[]>(["", "", ""]);
+  const [selectedMiceIds, setSelectedMiceIds] = useState<(string | "")[]>(["", "", ""]);
   const [subcategory, setSubcategory] = useState("");
-  const [connection, setConnection] = useState("all");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,36 +62,35 @@ export default function BenchmarksClient({
   const filtered = useMemo(() => {
     const selectedSub = subcategory.toLowerCase();
     return datasets.filter((item) => {
-      const sub = item.subcategory.toLowerCase();
+      const sub = (item.subcategory || "").toLowerCase();
       if (selectedSub && sub !== selectedSub) {
-        return false;
-      }
-      if (connection === "wired" && !sub.includes("wired")) {
-        return false;
-      }
-      if (
-        connection === "wireless" &&
-        !sub.includes("wireless") &&
-        !sub.includes("2.4")
-      ) {
         return false;
       }
       return true;
     });
-  }, [datasets, subcategory, connection]);
+  }, [datasets, subcategory]);
 
   const comparisonPool = filtered.length ? filtered : datasets;
 
-  const selectedNames = selectedIds
-    .map((id) => datasets.find((item) => item.id === id)?.name)
-    .filter((name): name is string => Boolean(name));
+  const selectedMice = useMemo(() => {
+    return selectedMiceIds
+      .map((id) => datasets.find((item) => item.id === id))
+      .filter((p): p is BenchmarkDataset => Boolean(p));
+  }, [selectedMiceIds, datasets]);
 
-  const latencyValues = buildLatencySeries(filtered);
-  const pollingEntries = buildPollingEntries(filtered);
-  const axisLabels = buildAxisLabels(filtered);
+  const latencyData = useMemo(() => {
+    return selectedMice.length > 0 ? selectedMice : filtered.slice(-3);
+  }, [selectedMice, filtered]);
+
+  const pollingData = useMemo(() => {
+    return selectedMice.length > 0 ? selectedMice : filtered.slice(0, 5);
+  }, [selectedMice, filtered]);
+
+  const selectedNames = useMemo(() => selectedMice.map(p => p.name), [selectedMice]);
+
 
   const addToCompare = (dataset: BenchmarkDataset) => {
-    setSelectedIds((prev) => {
+    setSelectedMiceIds((prev) => {
       if (prev.includes(dataset.id)) {
         return prev;
       }
@@ -149,25 +127,27 @@ export default function BenchmarksClient({
   );
 
   return (
-    <div className="space-y-6">
-      <div className="bench-card rounded-3xl px-6 py-5">
+    <div className="space-y-8">
+      <div className="bench-card px-6 py-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-sm font-semibold text-slate-700 dark:text-neutral-200">
+          <div className="text-sm font-semibold text-muted-foreground">
             {description}
           </div>
-          <div className="flex w-full items-center gap-2 rounded-full border border-slate-200 bg-white/80 p-1 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-400 sm:w-auto">
+          <div className="flex w-full items-center gap-1 rounded-full border border-border bg-muted/50 p-1 sm:w-auto">
             <button
-              className={`flex-1 rounded-full px-4 py-1 sm:flex-none ${
-                mode === "benchmarks" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-neutral-300"
-              }`}
+              className={`flex-1 rounded-full px-4 py-1.5 text-xs font-medium transition-all sm:flex-none ${mode === "benchmarks"
+                ? "bg-accent text-accent-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
               onClick={() => setMode("benchmarks")}
             >
               Benchmarks
             </button>
             <button
-              className={`flex-1 rounded-full px-4 py-1 sm:flex-none ${
-                mode === "shape" ? "bg-blue-500/80 text-white" : "text-slate-600 dark:text-neutral-300"
-              }`}
+              className={`flex-1 rounded-full px-4 py-1.5 text-xs font-medium transition-all sm:flex-none ${mode === "shape"
+                ? "bg-accent text-accent-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
               onClick={() => setMode("shape")}
             >
               Shape
@@ -177,29 +157,29 @@ export default function BenchmarksClient({
       </div>
 
       {mode === "shape" ? (
-        <div className="bench-card rounded-3xl px-6 py-8">
-          <div className="text-sm font-semibold text-slate-800 dark:text-neutral-100">
+        <div className="bench-card px-6 py-8">
+          <div className="text-sm font-semibold text-foreground">
             Shape comparison runs on EloShapes
           </div>
-          <div className="mt-2 text-sm text-slate-600 dark:text-neutral-400">
+          <div className="mt-2 text-sm text-muted-foreground">
             We open your selected products in a new tab for external shape analysis.
           </div>
-          <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-600 dark:text-neutral-300">
-            {selectedNames.length ? (
-              selectedNames.map((name) => (
+          <div className="mt-6 flex flex-wrap gap-2">
+            {selectedMice.length ? (
+              selectedMice.map((p) => (
                 <span
-                  key={name}
-                  className="rounded-full border border-slate-200 px-3 py-1 text-slate-700 dark:border-neutral-800/60 dark:text-neutral-300"
+                  key={p.id}
+                  className="rounded-full border border-border bg-muted/30 px-3 py-1 text-xs font-medium text-foreground"
                 >
-                  {name}
+                  {p.name}
                 </span>
               ))
             ) : (
-              <span className="text-slate-500 dark:text-neutral-500">No products selected.</span>
+              <span className="text-xs text-muted-foreground">No products selected.</span>
             )}
           </div>
           <button
-            className="bench-button mt-5 rounded-full px-5 py-2 text-sm font-semibold text-white"
+            className="bench-button mt-6 rounded-full px-6 py-2.5 text-sm font-semibold shadow-sm"
             onClick={() => openShape()}
             disabled={!selectedNames.length}
           >
@@ -208,29 +188,25 @@ export default function BenchmarksClient({
         </div>
       ) : (
         <>
-          <div className="bench-card rounded-3xl px-6 py-5">
-            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-neutral-400">
-              <select
-                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300 sm:w-auto"
-                value={subcategory}
-                onChange={(event) => setSubcategory(event.target.value)}
-              >
-                <option value="">All subcategories</option>
-                {uniqueSubcategories.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-              <select
-                className="w-full rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300 sm:w-auto"
-                value={connection}
-                onChange={(event) => setConnection(event.target.value)}
-              >
-                <option value="all">All connections</option>
-                <option value="wired">Wired</option>
-                <option value="wireless">2.4GHz</option>
-              </select>
+          <div className="bench-card px-6 py-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Subcategory
+                </span>
+                <select
+                  className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium text-foreground outline-none ring-accent/20 transition-all focus:border-accent focus:ring-4"
+                  value={subcategory}
+                  onChange={(event) => setSubcategory(event.target.value)}
+                >
+                  <option value="">All items</option>
+                  {uniqueSubcategories.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -241,24 +217,20 @@ export default function BenchmarksClient({
             latencyLabel="Latency"
             accuracyLabel="Accuracy"
             selectPlaceholder="Choose product"
-            selectedIds={selectedIds}
-            onChange={setSelectedIds}
+            selectedIds={selectedMiceIds}
+            onChange={setSelectedMiceIds}
           />
           <div className="grid gap-6 lg:grid-cols-2">
             <LatencyChart
-              title="Average Click Latency (ms)"
-              subtitle="Lower is better · Last 30 days"
-              wiredLabel="Wired"
-              wirelessLabel="2.4GHz"
-              wiredSeries={{ label: "Wired", values: latencyValues }}
-              wirelessSeries={{ label: "2.4GHz", values: latencyValues }}
-              axisLabels={axisLabels}
+              title="Click Latency comparison"
+              subtitle="Lower is better"
+              items={latencyData}
               emptyLabel="Latency data unavailable"
             />
             <PollingChart
               title="Polling Rate Consistency"
               subtitle="Stability at 4000Hz · 8000Hz"
-              entries={pollingEntries}
+              items={pollingData}
               emptyLabel="No polling data available"
             />
           </div>
@@ -285,10 +257,13 @@ export default function BenchmarksClient({
             onViewShape={openShape}
           />
           {loading ? (
-            <div className="text-sm text-slate-600 dark:text-neutral-400">Loading data...</div>
+            <div className="flex items-center justify-center py-10">
+              <div className="text-sm font-medium text-muted-foreground">Loading data...</div>
+            </div>
           ) : null}
         </>
       )}
     </div>
   );
 }
+

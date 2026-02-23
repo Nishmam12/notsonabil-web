@@ -15,10 +15,10 @@ type DatasetCardProps = {
 };
 
 const tierStyles: Record<string, string> = {
-  S: "bg-emerald-500/20 text-emerald-200",
-  A: "bg-amber-500/20 text-amber-200",
-  B: "bg-blue-500/20 text-blue-200",
-  C: "bg-slate-500/20 text-slate-200",
+  S: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  A: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+  B: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  C: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20",
 };
 
 export default function DatasetCard({
@@ -36,53 +36,66 @@ export default function DatasetCard({
   const imageSrc = dataset.image || "/window.svg";
 
   return (
-    <div className="bench-card rounded-2xl p-4 transition hover:-translate-y-1">
+    <div className="bench-card bench-card-hover group relative flex flex-col p-5">
       <div className="flex items-center justify-between">
-        <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${tierStyle}`}>
+        <span className={`rounded-full border px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${tierStyle}`}>
           {tierLabel} {dataset.tier}
         </span>
-        <span className="text-[10px] text-slate-500 dark:text-slate-400">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
           {dataset.subcategory}
         </span>
       </div>
-      <div className="mt-4 flex items-center justify-center">
-        <Image
-          className="aspect-square w-16 rounded-full object-cover sm:w-20"
-          src={imageSrc}
-          alt={dataset.name}
-          width={160}
-          height={160}
-          unoptimized
-        />
+
+      <div className="relative my-8 flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full bg-accent/5 blur-3xl transition-opacity group-hover:opacity-100 opacity-0" />
+        <div className="relative size-20 overflow-hidden rounded-full border border-border bg-white sm:size-24">
+          <Image
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            src={imageSrc}
+            alt={dataset.name}
+            fill
+            unoptimized
+          />
+        </div>
       </div>
-      <div className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-        <span>{categoryLabel}</span>
-      </div>
-      <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-        {dataset.name}
-      </div>
-      <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-        {scoreLabel}{" "}
-        <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          {dataset.labScore}
-        </span>
-      </div>
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold">
-        <Link href={`/benchmarks/${dataset.category}/${dataset.id}`} className="text-blue-500 dark:text-blue-300">
-          {reportLabel}
-        </Link>
-        <button
-          className="rounded-full border border-slate-300 px-3 py-1 text-slate-600 dark:border-slate-700/60 dark:text-slate-300"
-          onClick={() => onCompare(dataset)}
-        >
-          {compareLabel}
-        </button>
-        <button
-          className="rounded-full border border-blue-500/40 px-3 py-1 text-blue-500 dark:text-blue-300"
-          onClick={() => onViewShape(dataset)}
-        >
-          {shapeLabel}
-        </button>
+
+      <div className="flex flex-1 flex-col">
+        <div className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+          {categoryLabel}
+        </div>
+        <div className="mt-1 text-base font-bold text-foreground transition-colors group-hover:text-accent">
+          {dataset.name}
+        </div>
+
+        <div className="mt-4 flex items-baseline gap-2">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            {scoreLabel}
+          </div>
+          <div className="text-2xl font-black text-foreground">
+            {dataset.labScore}
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-border/50 pt-5">
+          <Link
+            href={`/benchmarks/product/${dataset.id}`}
+            className="text-[11px] font-bold uppercase tracking-wider text-accent transition-colors hover:brightness-110"
+          >
+            {reportLabel}
+          </Link>
+          <button
+            className="rounded-full border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground transition-colors hover:bg-muted"
+            onClick={() => onCompare(dataset)}
+          >
+            {compareLabel}
+          </button>
+          <button
+            className="rounded-full border border-accent/30 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
+            onClick={() => onViewShape(dataset)}
+          >
+            {shapeLabel}
+          </button>
+        </div>
       </div>
     </div>
   );

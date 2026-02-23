@@ -75,26 +75,29 @@ export default function DatasetGrid({
   return (
     <div className="mt-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-neutral-100">
+        <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-foreground">
           <span className="bench-accent">▦</span>
           <span>{title}</span>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <select
-            className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300"
-            value={sortBy}
-            onChange={(event) => setSortBy(event.target.value)}
-          >
-            <option value="" disabled>
-              {sortLabel}
-            </option>
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Sort</span>
+            <select
+              className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium text-foreground outline-none ring-accent/20 transition-all focus:border-accent focus:ring-4"
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+            >
+              <option value="" disabled>
+                {sortLabel}
               </option>
-            ))}
-          </select>
-          <button className="rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300">
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted">
             {filterLabel}
           </button>
         </div>
@@ -115,9 +118,9 @@ export default function DatasetGrid({
           />
         ))}
       </div>
-      <div className="mt-8 flex justify-center">
+      <div className="mt-12 flex justify-center">
         <button
-          className="rounded-full border border-slate-200 bg-white/80 px-5 py-2 text-sm text-slate-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-800/60 dark:bg-neutral-950/90 dark:text-neutral-300"
+          className="rounded-full border border-border bg-background px-8 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => setVisibleCount((count) => count + 4)}
           disabled={!hasMore}
         >

@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import {
-  getBrands,
-  createBrand,
-  deleteBrandById,
-  reorderBrandDisplay,
-} from "@/lib/db";
+import { getBrands, createBrand, deleteBrandById, reorderBrandDisplay } from "@/lib/db";
 import type { Brand } from "@/types/brand";
-import { requireAdmin } from "@/lib/permissions";
-import { logger } from "@/lib/logger";
+import { requireRole } from "@/lib/permissions";
+import { logger, logActivity } from "@/lib/logger";
 
 export async function GET() {
   try {
@@ -32,8 +27,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const isAdmin = requireAdmin(request);
-  if (!isAdmin) {
+  const session = await requireRole([
+    "SUPER_ADMIN",
+    "ADMIN",
+    "EDITOR",
+    "CONTRIBUTOR",
+  ]);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -62,6 +62,21 @@ export async function POST(request: Request) {
       displayOrder,
     };
     await createBrand(brand);
+
+    const url = new URL(request.url);
+    const ip =
+      url.searchParams.get("ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0] ??
+      null;
+
+    await logActivity({
+      userId: session.userId,
+      action: "create",
+      entityType: "brand",
+      entityId: brand.id,
+      ipAddress: ip,
+    });
+
     return NextResponse.json({ data: brand });
   } catch (error) {
     logger.error("Failed to create brand", error);
@@ -70,8 +85,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const isAdmin = requireAdmin(request);
-  if (!isAdmin) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -83,6 +98,21 @@ export async function DELETE(request: Request) {
 
   try {
     await deleteBrandById(id);
+
+    const url = new URL(request.url);
+    const ip =
+      url.searchParams.get("ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0] ??
+      null;
+
+    await logActivity({
+      userId: session.userId,
+      action: "delete",
+      entityType: "brand",
+      entityId: id,
+      ipAddress: ip,
+    });
+
     return NextResponse.json({ ok: true });
   } catch (error) {
     logger.error("Failed to delete brand", error);
@@ -91,8 +121,8 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const isAdmin = requireAdmin(request);
-  if (!isAdmin) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "EDITOR"]);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -118,6 +148,21 @@ export async function PATCH(request: Request) {
 
   try {
     await reorderBrandDisplay(sanitized);
+
+    const url = new URL(request.url);
+    const ip =
+      url.searchParams.get("ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0] ??
+      null;
+
+    await logActivity({
+      userId: session.userId,
+      action: "update",
+      entityType: "brand_order",
+      entityId: "bulk",
+      ipAddress: ip,
+    });
+
     return NextResponse.json({ ok: true });
   } catch (error) {
     logger.error("Failed to reorder brands", error);

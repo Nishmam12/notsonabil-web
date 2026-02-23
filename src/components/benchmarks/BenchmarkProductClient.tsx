@@ -13,12 +13,6 @@ type BenchmarkProductClientProps = {
   productId: string;
 };
 
-const buildLatencySeries = (items: BenchmarkDataset[]) => {
-  const sorted = [...items].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
-  return sorted.slice(-7).map((item) => item.latency);
-};
 
 export default function BenchmarkProductClient({
   category,
@@ -41,15 +35,6 @@ export default function BenchmarkProductClient({
 
   const current = datasets.find((item) => item.id === productId);
   const related = datasets.filter((item) => item.id !== productId);
-  const latencyValues = buildLatencySeries(datasets);
-  const pollingEntries = related
-    .slice(0, 4)
-    .map((item) => ({ label: item.name, value: item.accuracy }));
-  const axisLabels = datasets
-    .slice(0, 3)
-    .map((item) =>
-      new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit" })
-    );
 
   const buildEloShapesUrl = (names: string[]) => {
     if (names.length >= 2) {
@@ -111,19 +96,15 @@ export default function BenchmarkProductClient({
       />
       <div className="grid gap-6 lg:grid-cols-2">
         <LatencyChart
-          title="Average Click Latency (ms)"
-          subtitle="Lower is better · Last 30 days"
-          wiredLabel="Wired"
-          wirelessLabel="2.4GHz"
-          wiredSeries={{ label: "Wired", values: latencyValues }}
-          wirelessSeries={{ label: "2.4GHz", values: latencyValues }}
-          axisLabels={axisLabels}
+          title="Click Latency comparison"
+          subtitle="Showing history and average"
+          items={current ? [current] : []}
           emptyLabel="Latency data unavailable"
         />
         <PollingChart
           title="Polling Rate Consistency"
           subtitle="Stability at 4000Hz · 8000Hz"
-          entries={pollingEntries}
+          items={related.slice(0, 5)}
           emptyLabel="No polling data available"
         />
       </div>

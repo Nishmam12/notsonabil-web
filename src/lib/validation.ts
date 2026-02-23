@@ -44,13 +44,15 @@ export function validateBenchmark(data: Partial<BenchmarkDataset>): ValidationRe
     }
 
     // Numeric validations
-    if (typeof data.latency === "number") {
-        if (data.latency < 0) {
-            errors.push({ field: "latency", message: "Latency must be >= 0" });
+    const latencyFields = ["latency_wired_1", "latency_wired_2", "latency_wired_3", "latency_24g_1", "latency_24g_2", "latency_24g_3"];
+    latencyFields.forEach(field => {
+        const val = (data as any)[field];
+        if (typeof val === "number") {
+            if (val < 0) {
+                errors.push({ field, message: `${field} must be >= 0` });
+            }
         }
-    } else if (data.latency !== undefined) {
-        errors.push({ field: "latency", message: "Latency must be a number" });
-    }
+    });
 
     if (typeof data.accuracy === "number") {
         if (data.accuracy < 0 || data.accuracy > 100) {

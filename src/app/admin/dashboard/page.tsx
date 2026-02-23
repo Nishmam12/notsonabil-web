@@ -15,11 +15,6 @@ export default async function AdminDashboardPage() {
   const recentBenchmarks = [...benchmarks]
     .sort((a, b) => new Date(b.testDate).getTime() - new Date(a.testDate).getTime())
     .slice(0, 4);
-  const sheetsConnected = Boolean(
-    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
-    process.env.GOOGLE_SHEETS_ID
-  );
 
   return (
     <AdminLayout
@@ -33,7 +28,7 @@ export default async function AdminDashboardPage() {
               Quick actions
             </div>
             <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
-              Choose a workspace to create or update content.
+              Choose a workspace to create or update content stored in Supabase.
             </div>
           </div>
           <Link
@@ -50,7 +45,7 @@ export default async function AdminDashboardPage() {
           >
             <div className="text-xs text-neutral-500 dark:text-neutral-400">Benchmarks</div>
             <div className="mt-2 text-sm text-neutral-800 dark:text-neutral-200">
-              Add datasets, upload images, and sync to Google Sheets.
+              Add datasets, upload images, and sync to the database.
             </div>
           </Link>
           <Link
@@ -95,9 +90,9 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-neutral-200 bg-white/50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900/50">
-            <div className="text-xs text-neutral-500 dark:text-neutral-400">Sheets sync</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Database</div>
             <div className="mt-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-              {sheetsConnected ? "Connected" : "Needs setup"}
+              Connected
             </div>
           </div>
           <div className="rounded-2xl border border-neutral-200 bg-white/50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900/50">
@@ -121,7 +116,7 @@ export default async function AdminDashboardPage() {
               Recent benchmarks
             </div>
             <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
-              Latest updates ready to sync to Google Sheets.
+              Latest updates stored in the database.
             </div>
           </div>
           <Link

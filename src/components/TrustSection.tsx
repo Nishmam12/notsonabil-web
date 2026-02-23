@@ -3,6 +3,7 @@ import Image from "next/image";
 
 const cards = [
   {
+    id: "early-access",
     title: "early access to global tech",
     description:
       "I get my hands on exclusive international review units before most so you see what’s coming, not just what’s already here.",
@@ -11,6 +12,7 @@ const cards = [
       "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
   },
   {
+    id: "multi-platform",
     title: "reach across multi platforms",
     description:
       "With a strong presence on YouTube, Instagram, and more, my content connects with thousands of real tech fans—every single week.",
@@ -19,6 +21,7 @@ const cards = [
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80",
   },
   {
+    id: "community",
     title: "an active community",
     description:
       "Join a buzzing Discord server full of people asking questions, sharing insights, and geeking out about tech—just like you.",
@@ -39,7 +42,7 @@ export default function TrustSection() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => (
           <div
-            key={card.title}
+            key={card.id}
             className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-[0_16px_40px_rgba(0,0,0,0.06)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
           >
             <div className="aspect-[4/3] overflow-hidden rounded-xl">

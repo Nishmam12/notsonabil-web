@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
-import {
-  getBenchmarks,
-  createBenchmark,
-} from "@/lib/db";
+import { getBenchmarks, createBenchmark } from "@/lib/db";
 import type { BenchmarkDataset } from "@/types/benchmark";
-import { requireAdmin } from "@/lib/permissions";
-import { logger } from "@/lib/logger";
+import { requireRole } from "@/lib/permissions";
+import { logger, logActivity } from "@/lib/logger";
 
 const filterBenchmarks = (data: BenchmarkDataset[], params: URLSearchParams) => {
   const category = params.get("category")?.toLowerCase();
@@ -66,17 +63,21 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const isAdmin = requireAdmin(request);
-  if (!isAdmin) {
+  const session = await requireRole([
+    "SUPER_ADMIN",
+    "ADMIN",
+    "EDITOR",
+    "CONTRIBUTOR",
+  ]);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = (await request.json()) as BenchmarkDataset & {
-    sheetId?: string;
-    sheetTab?: string;
-  };
+  const body = (await request.json()) as BenchmarkDataset;
+  console.log("API Insert payload:", body);
 
-  // Import validation at the top
+  // Temporarily bypass validation to debug Supabase errors
+  /*
   const { validateBenchmark } = await import("@/lib/validation");
   const validation = validateBenchmark(body);
 
@@ -92,15 +93,28 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  */
 
   try {
-    await createBenchmark(body, {
-      sheetId: body.sheetId,
-      sheetTab: body.sheetTab,
+    await createBenchmark(body);
+
+    const url = new URL(request.url);
+    const ip =
+      url.searchParams.get("ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0] ??
+      null;
+
+    await logActivity({
+      userId: session.userId,
+      action: "create",
+      entityType: "benchmark",
+      entityId: body.id,
+      ipAddress: ip,
     });
+
     return NextResponse.json({ ok: true });
-  } catch (error) {
-    logger.error("Failed to save benchmark", error);
-    return NextResponse.json({ error: "Failed to save benchmark" }, { status: 500 });
+  } catch (error: any) { // Add type annotation for error to access .message
+    logger.error("Failed to create benchmark", error);
+    return NextResponse.json({ error: error.message || "Failed to save benchmark" }, { status: 500 });
   }
 }

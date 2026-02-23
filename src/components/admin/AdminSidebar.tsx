@@ -7,6 +7,7 @@ const links = [
   { href: "/admin/reviews", label: "Reviews" },
   { href: "/admin/photoshoots", label: "Photoshoots" },
   { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/logs", label: "Activity logs" },
 ];
 
 export default function AdminSidebar() {
@@ -25,6 +26,14 @@ export default function AdminSidebar() {
             {link.label}
           </Link>
         ))}
+        <form action="/api/admin/logout" method="POST" className="pt-4 mt-4 border-t border-neutral-100 dark:border-neutral-800">
+          <button
+            type="submit"
+            className="flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+          >
+            Logout
+          </button>
+        </form>
       </div>
     </aside>
   );

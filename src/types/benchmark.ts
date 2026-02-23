@@ -7,6 +7,12 @@ export type BenchmarkDataset = {
   subcategory: string;
   brand: string;
   latency: number;
+  latency_wired_1: number;
+  latency_wired_2: number;
+  latency_wired_3: number;
+  latency_24g_1: number;
+  latency_24g_2: number;
+  latency_24g_3: number;
   accuracy: number;
   pollingRate: number;
   labScore: number;
@@ -25,6 +31,7 @@ export type LatencySeries = {
 };
 
 export type PollingEntry = {
+  id: string;
   label: string;
   value: number;
 };

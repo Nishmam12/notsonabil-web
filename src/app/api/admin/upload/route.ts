@@ -4,7 +4,7 @@ import { generatePresignedUploadUrl, getPublicUrl } from "@/lib/storage";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
-  const isAdmin = requireAdmin(request);
+  const isAdmin = await requireAdmin();
   if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -17,8 +17,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File missing" }, { status: 400 });
     }
 
-    // Reuse the same logic as /api/upload but specialized for admin usage if needed
-    // For now, let's establish a clean pattern using the s3 lib
     const timestamp = Date.now();
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
     const key = `admin/${timestamp}-${sanitizedName}`;

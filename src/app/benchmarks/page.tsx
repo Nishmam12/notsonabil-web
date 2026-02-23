@@ -2,6 +2,7 @@ import BenchLayout from "@/components/benchmarks/BenchLayout";
 import BenchHeader from "@/components/benchmarks/BenchHeader";
 import BenchSidebar from "@/components/benchmarks/BenchSidebar";
 import BenchmarksClient from "@/components/benchmarks/BenchmarksClient";
+import BenchmarksPageClient from "@/components/benchmarks/BenchmarksPageClient";
 import { getBenchmarks } from "@/lib/db";
 
 const formatLabel = (value: string) =>
@@ -33,7 +34,7 @@ export default async function BenchmarksPage() {
           actionHref="#"
         />
         <div className="mt-8 text-sm text-slate-600 dark:text-slate-400">
-          No benchmarks found.
+          No benchmarks available yet.
         </div>
       </BenchLayout>
     );
@@ -51,18 +52,10 @@ export default async function BenchmarksPage() {
         actionLabel="Download Methodology PDF"
         actionHref="#"
       />
-      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(14rem,18rem)_1fr] xl:grid-cols-[minmax(16rem,20rem)_1fr]">
-        <BenchSidebar
-          title="Device categories"
-          categories={categories}
-          activeCategory={defaultCategory.id}
-        />
-        <BenchmarksClient
-          category={defaultCategory.id}
-          categoryLabel={defaultCategory.label}
-          description={defaultCategory.description}
-        />
-      </div>
+      <BenchmarksPageClient
+        categories={categories}
+        initialCategory={defaultCategory.id as any}
+      />
     </BenchLayout>
   );
 }

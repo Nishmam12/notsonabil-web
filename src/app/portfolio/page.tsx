@@ -23,8 +23,8 @@ export default function PortfolioPage() {
             <div className="grid gap-8 lg:grid-cols-[minmax(8rem,12rem)_1fr]">
               <Image
                 className="aspect-square w-28 rounded-2xl object-cover sm:w-32 md:w-36 lg:w-40"
-                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80"
-                alt="Profile"
+                src="/uploads/1771238609643-main__28_of_36_.jpg"
+                alt="NOTSONABIL logo"
                 width={600}
                 height={600}
                 unoptimized
